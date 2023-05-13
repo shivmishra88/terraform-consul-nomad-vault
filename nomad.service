@@ -1,15 +1,21 @@
+# nomad.service
 [Unit]
-Description=Nomad
+Description="Nomad"
 Documentation=https://www.nomadproject.io/docs/
 Wants=network-online.target
 After=network-online.target
 
 [Service]
+User=nomad
+Group=nomad
 ExecStart=/usr/local/bin/nomad agent -config=/etc/nomad.d
-ExecReload=/bin/kill -HUP $MAINPID
+ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 Restart=on-failure
 LimitNOFILE=65536
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nomad
 
 [Install]
 WantedBy=multi-user.target

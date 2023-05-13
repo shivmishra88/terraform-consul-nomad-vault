@@ -1,3 +1,4 @@
+# consul.service
 [Unit]
 Description="HashiCorp Consul - A service mesh solution"
 Documentation=https://www.consul.io/
@@ -9,10 +10,13 @@ ConditionFileNotEmpty=/etc/consul.d/consul.hcl
 User=consul
 Group=consul
 ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d/
-ExecReload=/usr/local/bin/consul reload
+ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 Restart=on-failure
 LimitNOFILE=65536
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=consul
 
 [Install]
 WantedBy=multi-user.target

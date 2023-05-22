@@ -84,7 +84,9 @@ resource "aws_instance" "node" {
               # Create consul user
               sudo useradd --system --home /etc/consul.d --shell /bin/false consul
               sudo mkdir --parents /etc/consul.d
+              sudo mkdir --parents /var/consul
               sudo chown --recursive consul:consul /etc/consul.d
+              sudo chown --recursive consul:consul /var/consul
 
               # Install Consul
               wget https://releases.hashicorp.com/consul/1.15.2/consul_1.15.2_linux_amd64.zip
@@ -112,7 +114,9 @@ resource "aws_instance" "node" {
               # Create nomad user
               sudo useradd --system --home /etc/nomad.d --shell /bin/false nomad
               sudo mkdir --parents /etc/nomad.d
+              sudo mkdir --parents /var/nomad
               sudo chown --recursive nomad:nomad /etc/nomad.d
+              sudo chown --recursive nomad:nomad /var/nomad
 
               # Install Nomad
               wget https://releases.hashicorp.com/nomad/1.5.5/nomad_1.5.5_linux_amd64.zip

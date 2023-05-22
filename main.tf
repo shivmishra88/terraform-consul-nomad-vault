@@ -99,13 +99,13 @@ resource "aws_instance" "node" {
               # Get private IP address
               private_ip=$(hostname -I | awk '{print $1}')
 
-              if [ ${count.index} -lt 3 ]; then
-                echo "${file("${path.module}/server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
-              else
-                echo "${file("${path.module}/client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
-              fi
-
-              echo "${file("${path.module}/consul.service")}" | sudo tee /etc/systemd/system/consul.service
+          if [ ${count.index} -eq 0 ]; then
+          echo "${file("${path.module}/consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
+          elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
+          echo "${file("${path.module}/consul-server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
+          else
+          echo "${file("${path.module}/consul-client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
+          fi
               
               # Enable and start Consul
               sudo systemctl enable consul

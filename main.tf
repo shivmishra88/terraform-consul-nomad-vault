@@ -128,10 +128,10 @@ resource "aws_instance" "node" {
               sudo chown nomad:nomad /usr/local/bin/nomad
 
               # Copy the Nomad configuration file and systemd service file
-               if [[ ${count.index} -eq 0 ]]; then
-               echo "${file(\"${path.module}/nomad.bootstrap.hcl.tpl\")}" | sudo tee /etc/nomad.d/nomad.hcl
-               elif [[ ${count.index} -eq 1 ]]; then
-               echo "${file(\"${path.module}/nomad-clients.hcl.tpl\")}" | sudo tee /etc/nomad.d/nomad.hcl
+               if [ ${count.index} -eq 0 ]; then
+               echo "${file("${path.module}/nomad.bootstrap.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
+               elif [ ${count.index} -eq 1 ]; then
+               echo "${file("${path.module}/nomad-clients.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
                fi
                echo "${file("${path.module}/nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
               # Enable and start Nomad

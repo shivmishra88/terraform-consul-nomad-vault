@@ -139,5 +139,37 @@ resource "aws_instance" "node" {
               # Enable and start Nomad
               sudo systemctl enable nomad
               sudo systemctl start nomad
+
+
+              # Install Vault
+              if [ ${count.index} -lt 3 ]; then
+                  echo "Installing Vault..."
+                  curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+                  sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+                  sudo apt-get update && sudo apt-get install vault -y
+
+                  # Initialize Vault and get unseal keys
+                  echo "Initializing Vault..."
+                  output=$(sudo vault operator init -format=json)
+                  unseal_key_1=$(echo "$output" | jq -r '.unseal_keys_b64[0]')
+                  unseal_key_2=$(echo "$output" | jq -r '.unseal_keys_b64[1]')
+                  unseal_key_3=$(echo "$output" | jq -r '.unseal_keys_b64[2]')
+                  root_token=$(echo "$output" | jq -r '.root_token')
+
+                  # Unseal Vault
+                  echo "Unsealing Vault..."
+                  sudo vault operator unseal "$unseal_key_1"
+                  sudo vault operator unseal "$unseal_key_2"
+                  sudo vault operator unseal "$unseal_key_3"
+
+                  # Export root token as an environment variable
+                  export VAULT_TOKEN="$root_token"
+
+                  # Start Vault service
+                  echo "Starting Vault service..."
+                  sudo systemctl start vault
+              else
+                  echo "vault not required on this node"
+
               EOF
 }

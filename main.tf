@@ -176,6 +176,5 @@ resource "aws_instance" "node" {
                   sudo systemctl start vault
               else
                   echo "vault not required on this node"
-
               EOF
 }

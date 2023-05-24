@@ -144,9 +144,15 @@ resource "aws_instance" "node" {
               # Install Vault
               if [ ${count.index} -lt 3 ]; then
                   echo "Installing Vault..."
+                  # Create vault user
+                  sudo useradd --system --home /etc/vault.d --shell /bin/false vault
+                  sudo mkdir --parents /etc/vault.d
+                  sudo chown --recursive vault:vault /etc/vault.d
                   curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
                   sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
                   sudo apt-get update && sudo apt-get install vault -y
+                  echo "${file("${path.module}/vault.hcl")}" | sudo tee /etc/vault.d/vault.hcl
+
 
                   # Initialize Vault and get unseal keys
                   echo "Initializing Vault..."

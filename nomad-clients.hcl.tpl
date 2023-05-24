@@ -1,4 +1,4 @@
-datacenter = "dc1"
+datacenter = \"dc1\"
 data_dir = \"/var/nomad\"
 bind_addr = \"0.0.0.0\"
 

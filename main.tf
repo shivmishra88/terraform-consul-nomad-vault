@@ -57,6 +57,7 @@ resource "aws_security_group" "allow_all" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 resource "aws_instance" "node" {
   count = 7
 
@@ -75,106 +76,92 @@ resource "aws_instance" "node" {
   vpc_security_group_ids      = [aws_security_group.allow_all.id]
 
   user_data = <<-EOF
-              #!/bin/bash
-              exec > >(tee /home/ubuntu/user_data.log) 2>&1
-              sudo hostnamectl set-hostname Node-${count.index}
-              sudo apt-get update -y
-              sudo apt-get install -y unzip jq
+    #!/bin/bash
+    exec > >(tee /home/ubuntu/user_data.log) 2>&1
+    sudo hostnamectl set-hostname Node-${count.index}
+    sudo apt-get update -y
+    sudo apt-get install -y unzip jq
 
-              # Create consul user
-              sudo useradd --system --home /etc/consul.d --shell /bin/false consul
-              sudo mkdir --parents /etc/consul.d
-              sudo mkdir --parents /var/consul
-              sudo chown --recursive consul:consul /etc/consul.d
-              sudo chown --recursive consul:consul /var/consul
+    # Create consul user
+    sudo useradd --system --home /etc/consul.d --shell /bin/false consul
+    sudo mkdir --parents /etc/consul.d
+    sudo mkdir --parents /var/consul
+    sudo chown --recursive consul:consul /etc/consul.d
+    sudo chown --recursive consul:consul /var/consul
 
-              # Install Consul
-              wget https://releases.hashicorp.com/consul/1.15.2/consul_1.15.2_linux_amd64.zip
-              unzip consul_1.15.2_linux_amd64.zip
-              sudo mv consul /usr/local/bin/
-              sudo chmod 755 /usr/local/bin/consul
-              sudo chown consul:consul /usr/local/bin/consul
-              # Copy the Consul configuration file and systemd service file
+    # Install Consul
+    wget https://releases.hashicorp.com/consul/1.15.2/consul_1.15.2_linux_amd64.zip
+    unzip consul_1.15.2_linux_amd64.zip
+    sudo mv consul /usr/local/bin/
+    sudo chmod 755 /usr/local/bin/consul
+    sudo chown consul:consul /usr/local/bin/consul
+    # Copy the Consul configuration file and systemd service file
 
-              # Get private IP address
-              private_ip=$(hostname -I | awk '{print $1}')
-              
-              #Consul Template files
-              if [ ${count.index} -eq 0 ]; then
-                  echo "${file("${path.module}/consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
-              elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
-                  echo "${file("${path.module}/consul-server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
-              else
-                  echo "${file("${path.module}/consul-client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
-              fi
-              echo "${file("${path.module}/consul.service")}" | sudo tee /etc/systemd/system/consul.service
-           
-              # Enable and start Consul
-              sudo systemctl enable consul
-              sudo systemctl start consul
+    # Get private IP address
+    private_ip=$(hostname -I | awk '{print $1}')
+    
+    # Consul Template files
+    if [ ${count.index} -eq 0 ]; then
+        echo "${file("${path.module}/consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
+    elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
+        echo "${file("${path.module}/consul-server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
+    else
+        echo "${file("${path.module}/consul-client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
+    fi
+    echo "${file("${path.module}/consul.service")}" | sudo tee /etc/systemd/system/consul.service
 
-              # Create nomad user
-              sudo useradd --system --home /etc/nomad.d --shell /bin/false nomad
-              sudo mkdir --parents /etc/nomad.d
-              sudo mkdir --parents /var/nomad
-              sudo chown --recursive nomad:nomad /etc/nomad.d
-              sudo chown --recursive nomad:nomad /var/nomad
+    # Enable and start Consul
+    sudo systemctl enable consul
+    sudo systemctl start consul
 
-              # Install Nomad
-              wget https://releases.hashicorp.com/nomad/1.5.5/nomad_1.5.5_linux_amd64.zip
-              unzip nomad_1.5.5_linux_amd64.zip
-              sudo mv nomad /usr/local/bin/
-              sudo chmod 755 /usr/local/bin/nomad
-              sudo chown nomad:nomad /usr/local/bin/nomad
+    # Create nomad user
+    sudo useradd --system --home /etc/nomad.d --shell /bin/false nomad
+    sudo mkdir --parents /etc/nomad.d
+    sudo mkdir --parents /var/nomad
+    sudo chown --recursive nomad:nomad /etc/nomad.d
+    sudo chown --recursive nomad:nomad /var/nomad
 
-              # Copy the Nomad configuration file and systemd service file
-              if [ ${count.index} -eq 0 ]; then
-                  echo "${file("${path.module}/nomad.bootstrap.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
-              elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] ; then
-                  echo "${file("${path.module}/nomad-server.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
-              else
-                  echo "${file("${path.module}/nomad-clients.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
-              fi
-              echo "${file("${path.module}/nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
-              # Enable and start Nomad
-              sudo systemctl enable nomad
-              sudo systemctl start nomad
+    # Install Nomad
+    wget https://releases.hashicorp.com/nomad/1.5.5/nomad_1.5.5_linux_amd64.zip
+    unzip nomad_1.5.5_linux_amd64.zip
+    sudo mv nomad /usr/local/bin/
+    sudo chmod 755 /usr/local/bin/nomad
+    sudo chown nomad:nomad /usr/local/bin/nomad
 
+    # Copy the Nomad configuration file and systemd service file
+    if [ ${count.index} -eq 0 ]; then
+        echo "${file("${path.module}/nomad.bootstrap.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
+    elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] ; then
+        echo "${file("${path.module}/nomad-server.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
+    else
+        echo "${file("${path.module}/nomad-clients.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
+    fi
+    echo "${file("${path.module}/nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
 
-              # Install Vault
-              if [ ${count.index} -lt 3 ]; then
-                  echo "Installing Vault..."
-                  # Create vault user
-                  sudo useradd --system --home /etc/vault.d --shell /bin/false vault
-                  sudo mkdir --parents /etc/vault.d
-                  sudo chown --recursive vault:vault /etc/vault.d
-                  curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-                  sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-                  sudo apt-get update && sudo apt-get install vault -y
-                  echo "${file("${path.module}/vault.hcl")}" | sudo tee /etc/vault.d/vault.hcl
+    # Enable and start Nomad
+    sudo systemctl enable nomad
+    sudo systemctl start nomad
 
+    # Install Vault
+    if [ ${count.index} -lt 3 ]; then
+        echo "Installing Vault..."
+        # Create vault user
+        sudo useradd --system --home /etc/vault.d --shell /bin/false vault
+        sudo mkdir --parents /etc/vault.d
+        sudo chown --recursive vault:vault /etc/vault.d
+        curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+        sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+        sudo apt-get update && sudo apt-get install vault -y
 
-                  # Initialize Vault and get unseal keys
-                  echo "Initializing Vault..."
-                  output=$(sudo vault operator init -format=json)
-                  unseal_key_1=$(echo "$output" | jq -r '.unseal_keys_b64[0]')
-                  unseal_key_2=$(echo "$output" | jq -r '.unseal_keys_b64[1]')
-                  unseal_key_3=$(echo "$output" | jq -r '.unseal_keys_b64[2]')
-                  root_token=$(echo "$output" | jq -r '.root_token')
+        # Copy the Vault configuration file and systemd service file
+        echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
 
-                  # Unseal Vault
-                  echo "Unsealing Vault..."
-                  sudo vault operator unseal "$unseal_key_1"
-                  sudo vault operator unseal "$unseal_key_2"
-                  sudo vault operator unseal "$unseal_key_3"
+        # Enable and start Vault
+        sudo systemctl enable vault
+        sudo systemctl start vault
+    fi
 
-                  # Export root token as an environment variable
-                  export VAULT_TOKEN="$root_token"
-
-                  # Start Vault service
-                  echo "Starting Vault service..."
-                  sudo systemctl start vault
-              else
-                  echo "vault not required on this node"
-              EOF
+    # Install Docker
+    echo "vault not required"
+  EOF
 }

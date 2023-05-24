@@ -10,7 +10,7 @@ advertise {
 }
 
 server {
-  enabled          = true
+  enabled = true
 }
 
 client {

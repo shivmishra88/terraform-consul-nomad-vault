@@ -10,7 +10,7 @@ advertise {
 }
 
 server {
-  enabled          = true
+  enabled = true
   bootstrap_expect = 3
 }
 

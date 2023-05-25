@@ -159,6 +159,22 @@ resource "aws_instance" "node" {
         # Enable and start Vault
         sudo systemctl enable vault
         sudo systemctl start vault
+        # Initialize Vault and get unseal keys
+        echo "Initializing Vault..."
+        output=$(sudo vault operator init -format=json)
+        unseal_key_1=$(echo "$output" | jq -r '.unseal_keys_b64[0]')
+        unseal_key_2=$(echo "$output" | jq -r '.unseal_keys_b64[1]')
+        unseal_key_3=$(echo "$output" | jq -r '.unseal_keys_b64[2]')
+        root_token=$(echo "$output" | jq -r '.root_token')
+
+        # Unseal Vault
+        echo "Unsealing Vault..."
+        sudo vault operator unseal "$unseal_key_1"
+        sudo vault operator unseal "$unseal_key_2"
+        sudo vault operator unseal "$unseal_key_3"
+
+        # Export root token as an environment variable
+        export VAULT_TOKEN="$root_token"
     fi
 
     # Install Docker

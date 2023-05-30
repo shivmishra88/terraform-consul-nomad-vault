@@ -151,7 +151,7 @@ resource "aws_instance" "node" {
               curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
               sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
               sudo apt-get update && sudo apt-get install vault -y
-              echo "${file("${path.module}/vault.hcl")}" | sudo tee /etc/vault.d/vault.hcl
+              echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
               sudo service vault restart
               sudo export VAULT_ADDR=http://127.0.0.1:8200
               sudo export VAULT_SKIP_VERIFY=true
@@ -173,7 +173,7 @@ resource "aws_instance" "node" {
               curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
               sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
               sudo apt-get update && sudo apt-get install vault -y
-              echo "${file("${path.module}/vault.hcl")}" | sudo tee /etc/vault.d/vault.hcl
+              echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
               sudo service vault restart
               sudo export VAULT_ADDR=http://127.0.0.1:8200
               sudo export VAULT_SKIP_VERIFY=true

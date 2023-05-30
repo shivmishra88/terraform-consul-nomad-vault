@@ -139,7 +139,6 @@ resource "aws_instance" "node" {
               # Enable and start Nomad
               sudo systemctl enable nomad
               sudo systemctl start nomad
-              sudo sleep 10
               sudo service consul restart
               sudo service nomad restart
 

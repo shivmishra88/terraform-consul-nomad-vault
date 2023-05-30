@@ -176,9 +176,9 @@ resource "aws_instance" "node" {
 
         # Export root token as an environment variable
         ###export VAULT_TOKEN="$root_token"
-   else
+    else
 
     #
     echo "vault not required"
-  EOF
+    EOF
 }

@@ -159,6 +159,7 @@ resource "aws_instance" "node" {
         # Enable and start Vault
         sudo systemctl enable vault
         sudo systemctl start vault
+        export VAULT_ADDR="http://127.0.0.1:8200"
         # Initialize Vault and get unseal keys
         echo "Initializing Vault..."
         output=$(sudo vault operator init -format=json)

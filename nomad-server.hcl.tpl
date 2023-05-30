@@ -14,7 +14,8 @@ server {
 }
 
 client {
-  enabled = false
+  enabled = true
+  servers = [\"10.0.1.10:4647\", \"10.0.1.11:4647\", \"10.0.1.12:4647\"]
 }
 consul {
   address = \"127.0.0.1:8500\"

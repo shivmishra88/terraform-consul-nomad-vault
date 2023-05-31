@@ -155,8 +155,8 @@ resource "aws_instance" "node" {
                   sudo apt-get update && sudo apt-get install vault -y
                   echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
                   sudo service vault restart
-                  sudo export VAULT_ADDR=http://127.0.0.1:8200
-                  sudo export VAULT_SKIP_VERIFY=true
+                  export VAULT_ADDR=http://127.0.0.1:8200
+                  export VAULT_SKIP_VERIFY=true
                   sudo vault operator init -key-shares=3 -key-threshold=2 > vault_init.txt
                   sudo UNSEAL_KEY_1=$(cat vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
                   sudo UNSEAL_KEY_2=$(cat vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
@@ -177,8 +177,8 @@ resource "aws_instance" "node" {
                   sudo apt-get update && sudo apt-get install vault -y
                   echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
                   sudo service vault restart
-                  sudo export VAULT_ADDR=http://127.0.0.1:8200
-                  sudo export VAULT_SKIP_VERIFY=true
+                  export VAULT_ADDR=http://127.0.0.1:8200
+                  export VAULT_SKIP_VERIFY=true
                   sudo vault operator unseal $UNSEAL_KEY_1
                   sudo vault operator unseal $UNSEAL_KEY_2
               else

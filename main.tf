@@ -158,9 +158,9 @@ resource "aws_instance" "node" {
                   export VAULT_ADDR=http://127.0.0.1:8200
                   export VAULT_SKIP_VERIFY=true
                   vault operator init -key-shares=3 -key-threshold=2 > /home/ubuntu/vault_init.txt
-                  UNSEAL_KEY_1=$(cat vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
-                  UNSEAL_KEY_2=$(cat vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
-                  ROOT_TOKEN=$(cat vault_init.txt | grep "Initial Root Token:" | awk '{print $NF}')
+                  UNSEAL_KEY_1=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
+                  UNSEAL_KEY_2=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
+                  ROOT_TOKEN=$(cat /home/ubuntu/vault_init.txt | grep "Initial Root Token:" | awk '{print $NF}')
 
                   # Unseal Vault with two keys
                   sudo vault operator unseal $UNSEAL_KEY_1

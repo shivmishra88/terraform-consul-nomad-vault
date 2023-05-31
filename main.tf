@@ -163,8 +163,8 @@ resource "aws_instance" "node" {
                   ROOT_TOKEN=$(cat /home/ubuntu/vault_init.txt | grep "Initial Root Token:" | awk '{print $NF}')
 
                   # Unseal Vault with two keys
-                  sudo vault operator unseal $UNSEAL_KEY_1
-                  sudo vault operator unseal $UNSEAL_KEY_2
+                  vault operator unseal $UNSEAL_KEY_1
+                  vault operator unseal $UNSEAL_KEY_2
               ##########################Node-1 and Node-2####
               elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
                   echo "Installing Vault on Node-1 and Node-2..."

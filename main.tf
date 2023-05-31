@@ -182,6 +182,9 @@ resource "aws_instance" "node" {
                   sudo vault operator unseal $UNSEAL_KEY_1
                   sudo vault operator unseal $UNSEAL_KEY_2
               else
-                  echo "vault not required on this node"
+                  sudo service consul restart
+                  sudo service nomad restart
+                  sudo service vault restart
+              fi
               EOF
 }

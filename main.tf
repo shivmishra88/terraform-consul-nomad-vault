@@ -182,9 +182,12 @@ resource "aws_instance" "node" {
                   vault operator unseal $UNSEAL_KEY_1
                   vault operator unseal $UNSEAL_KEY_2
               else
-                  sudo service consul restart
-                  sudo service nomad restart
-                  sudo service vault restart
+                  echo "Else nothing"
               fi
+                  sudo service consul restart
+                  sleep 3
+                  sudo service nomad restart
+                  sleep 3
+                  sudo service vault restart
               EOF
 }

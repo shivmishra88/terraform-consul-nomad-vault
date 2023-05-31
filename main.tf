@@ -157,10 +157,10 @@ resource "aws_instance" "node" {
                   sudo service vault restart
                   export VAULT_ADDR=http://127.0.0.1:8200
                   export VAULT_SKIP_VERIFY=true
-                  sudo vault operator init -key-shares=3 -key-threshold=2 > vault_init.txt
-                  sudo UNSEAL_KEY_1=$(cat vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
-                  sudo UNSEAL_KEY_2=$(cat vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
-                  sudo ROOT_TOKEN=$(cat vault_init.txt | grep "Initial Root Token:" | awk '{print $NF}')
+                  vault operator init -key-shares=3 -key-threshold=2 > vault_init.txt
+                  UNSEAL_KEY_1=$(cat vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
+                  UNSEAL_KEY_2=$(cat vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
+                  ROOT_TOKEN=$(cat vault_init.txt | grep "Initial Root Token:" | awk '{print $NF}')
 
                   # Unseal Vault with two keys
                   sudo vault operator unseal $UNSEAL_KEY_1
@@ -179,8 +179,8 @@ resource "aws_instance" "node" {
                   sudo service vault restart
                   export VAULT_ADDR=http://127.0.0.1:8200
                   export VAULT_SKIP_VERIFY=true
-                  sudo vault operator unseal $UNSEAL_KEY_1
-                  sudo vault operator unseal $UNSEAL_KEY_2
+                  vault operator unseal $UNSEAL_KEY_1
+                  vault operator unseal $UNSEAL_KEY_2
               else
                   sudo service consul restart
                   sudo service nomad restart

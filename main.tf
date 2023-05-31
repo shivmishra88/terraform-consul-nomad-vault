@@ -165,6 +165,7 @@ resource "aws_instance" "node" {
                   # Unseal Vault with two keys
                   vault operator unseal $UNSEAL_KEY_1
                   vault operator unseal $UNSEAL_KEY_2
+                  cd /home/ubuntu
                   consul kv put vault_init.txt @/home/ubuntu/vault_init.txt
               ##########################Node-1 and Node-2####
               elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then

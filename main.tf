@@ -165,6 +165,12 @@ resource "aws_instance" "node" {
                   # Unseal Vault with two keys
                   vault operator unseal $UNSEAL_KEY_1
                   vault operator unseal $UNSEAL_KEY_2
+              else
+                  sudo service vault restart
+                  export VAULT_ADDR=http://127.0.0.1:8200
+                  export VAULT_SKIP_VERIFY=true
+                  vault operator unseal $UNSEAL_KEY_1
+                  vault operator unseal $UNSEAL_KEY_2
               ##########################Node-1 and Node-2####
               elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
                   echo "Installing Vault on Node-1 and Node-2..."
@@ -176,11 +182,6 @@ resource "aws_instance" "node" {
                   sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
                   sudo apt-get update && sudo apt-get install vault -y
                   echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
-                  sudo service vault restart
-                  export VAULT_ADDR=http://127.0.0.1:8200
-                  export VAULT_SKIP_VERIFY=true
-                  vault operator unseal $UNSEAL_KEY_1
-                  vault operator unseal $UNSEAL_KEY_2
               else
                   echo "Else nothing"
               fi

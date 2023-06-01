@@ -179,7 +179,7 @@ resource "aws_instance" "node" {
                   sudo apt-get update && sudo apt-get install vault -y
                   echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
                   sudo service vault restart
-                  sleep 20
+                  sleep 120
                   consul kv get vault_init.txt
                   consul kv get vault_init.txt > /home/ubuntu/vault_init.txt
                   UNSEAL_KEY_1=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')

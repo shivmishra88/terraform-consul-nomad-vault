@@ -192,10 +192,11 @@ resource "aws_instance" "node" {
               else
                   echo "Else nothing"
               fi
-                  sudo service consul restart
-                  sleep 3
-                  sudo service nomad restart
-                  sleep 3
-                  sudo service vault restart
+                  echo "Installation has been done"
+                  #sudo service consul restart
+                  #sleep 3
+                  #sudo service nomad restart
+                  #sleep 3
+                  #sudo service vault restart
               EOF
 }

@@ -181,6 +181,7 @@ resource "aws_instance" "node" {
                   sudo service vault restart
                   export VAULT_ADDR=http://127.0.0.1:8200
                   export VAULT_SKIP_VERIFY=true
+                  sleep 20
                   consul kv get vault_init.txt > vault_init.txt
                   UNSEAL_KEY_1=$(cat vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
                   UNSEAL_KEY_2=$(cat vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')

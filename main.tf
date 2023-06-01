@@ -155,12 +155,12 @@ resource "aws_instance" "node" {
                   sudo apt-get update && sudo apt-get install vault -y
                   echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
                   sudo service vault restart
+                  export VAULT_ADDR=http://127.0.0.1:8200
+                  export VAULT_SKIP_VERIFY=true
                   vault operator init -key-shares=3 -key-threshold=2 > /home/ubuntu/vault_init.txt
                   UNSEAL_KEY_1=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
                   UNSEAL_KEY_2=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
                   ROOT_TOKEN=$(cat /home/ubuntu/vault_init.txt | grep "Initial Root Token:" | awk '{print $NF}')
-                  export VAULT_ADDR=http://127.0.0.1:8200
-                  export VAULT_SKIP_VERIFY=true
 
                   # Unseal Vault with two keys
                   vault operator unseal $UNSEAL_KEY_1
@@ -182,10 +182,10 @@ resource "aws_instance" "node" {
                   sleep 120
                   consul kv get vault_init.txt
                   consul kv get vault_init.txt > /home/ubuntu/vault_init.txt
-                  UNSEAL_KEY_1=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
-                  UNSEAL_KEY_2=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
                   export VAULT_ADDR=http://127.0.0.1:8200
                   export VAULT_SKIP_VERIFY=true
+                  UNSEAL_KEY_1=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
+                  UNSEAL_KEY_2=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
                   # Unseal Vault with two keys
                   vault operator unseal $UNSEAL_KEY_1
                   vault operator unseal $UNSEAL_KEY_2

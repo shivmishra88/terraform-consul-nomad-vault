@@ -178,10 +178,11 @@ resource "aws_instance" "node" {
                   sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
                   sudo apt-get update && sudo apt-get install vault -y
                   echo "${file("${path.module}/vault.hcl.tpl")}" | sudo tee /etc/vault.d/vault.hcl
-                  sudo service vault restart
                   export VAULT_ADDR=http://127.0.0.1:8200
                   export VAULT_SKIP_VERIFY=true
+                  sudo service vault restart
                   sleep 20
+                  consul kv get vault_init.txt
                   consul kv get vault_init.txt > /home/ubuntu/vault_init.txt
                   UNSEAL_KEY_1=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
                   UNSEAL_KEY_2=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')

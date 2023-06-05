@@ -80,7 +80,12 @@ resource "aws_instance" "node" {
               sudo hostnamectl set-hostname Node-${count.index}
               sudo apt-get update -y
               sudo apt-get install -y unzip jq
-
+              # Get private IP address
+              private_ip=$(hostname -I | awk '{print $1}')
+              ##########Install Docker###
+              sudo apt install -y docker.io
+              echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
+              sudo dervice docker restart
               # Create consul user
               sudo useradd --system --home /etc/consul.d --shell /bin/false consul
               sudo mkdir --parents /etc/consul.d
@@ -95,9 +100,6 @@ resource "aws_instance" "node" {
               sudo chmod 755 /usr/local/bin/consul
               sudo chown consul:consul /usr/local/bin/consul
               # Copy the Consul configuration file and systemd service file
-
-              # Get private IP address
-              private_ip=$(hostname -I | awk '{print $1}')
               
               #Consul Template files
               if [ ${count.index} -eq 0 ]; then

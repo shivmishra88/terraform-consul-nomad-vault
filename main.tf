@@ -85,7 +85,8 @@ resource "aws_instance" "node" {
               ##########Install Docker###
               sudo apt install -y docker.io
               echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
-              sudo dervice docker restart
+              sudo service docker restart
+              sudo systemctl daemon-reload
               # Create consul user
               sudo useradd --system --home /etc/consul.d --shell /bin/false consul
               sudo mkdir --parents /etc/consul.d

@@ -6,7 +6,7 @@ Wants=network-online.target
 Requires=docker.socket
 [Service]
 Type=notify
-ExecStart=/usr/bin/dockerd -H fd:// -H tcp://\$private_ip:4646:2375\--cluster-advertise=\$private_ip:4646:2375\ --cluster-store consul://\$private_ip:4646:8500\
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://\"$private_ip:4646:2375\"--cluster-advertise=\"$private_ip:4646:2375\" --cluster-store consul://\"$private_ip:4646:8500\"
 ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2

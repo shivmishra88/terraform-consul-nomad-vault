@@ -208,6 +208,7 @@ resource "aws_instance" "node" {
                   echo "Else nothing"
               fi
                   echo "Installation has been done"
+                  sudo service docker restart
                   #sudo service consul restart
                   #sleep 3
                   #sudo service nomad restart

@@ -80,13 +80,16 @@ resource "aws_instance" "node" {
               sudo hostnamectl set-hostname Node-${count.index}
               sudo apt-get update -y
               sudo apt-get install -y unzip jq
+              
               # Get private IP address
               private_ip=$(hostname -I | awk '{print $1}')
+              
               ##########Install Docker###
               sudo apt install -y docker.io
               echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
               sudo systemctl daemon-reload
               sudo service docker restart
+              
               #########Contiv#########
               sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
               sudo tar xvf netplugin-1.2.0.tar.bz2
@@ -97,6 +100,7 @@ resource "aws_instance" "node" {
               echo "${file("${path.module}/netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
               sudo service netmaster restart
               sudo service netplugin restart
+              
         ######################################
               # Create consul user
               sudo useradd --system --home /etc/consul.d --shell /bin/false consul
@@ -128,6 +132,7 @@ resource "aws_instance" "node" {
               sudo mkdir --parents /var/nomad
               sudo chown --recursive nomad:nomad /etc/nomad.d
               sudo chown --recursive nomad:nomad /var/nomad
+              
               # Install Nomad
               wget https://releases.hashicorp.com/nomad/1.5.5/nomad_1.5.5_linux_amd64.zip
               unzip nomad_1.5.5_linux_amd64.zip

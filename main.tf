@@ -88,7 +88,7 @@ resource "aws_instance" "node" {
               echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
               sudo systemctl daemon-reload
               sudo service docker restart
-              #####Contiv#####
+              #####Contiv######
               sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
               sudo tar xvf netplugin-1.2.0.tar.bz2
               sudo cp netmaster /usr/local/bin/

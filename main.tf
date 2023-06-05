@@ -87,16 +87,6 @@ resource "aws_instance" "node" {
               echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
               sudo systemctl daemon-reload
               sudo service docker restart
-              #########Contiv#########
-              sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
-              sudo tar xvf netplugin-1.2.0.tar.bz2
-              sudo cp netmaster /usr/local/bin/
-              sudo cp netplugin /usr/local/bin/
-              sudo cp netctl /usr/local/bin/
-              echo "${file("${path.module}/netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
-              echo "${file("${path.module}/netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
-              sudo service netmaster restart
-              sudo service netplugin restart
         ######################################
               # Create consul user
               sudo useradd --system --home /etc/consul.d --shell /bin/false consul
@@ -104,7 +94,6 @@ resource "aws_instance" "node" {
               sudo mkdir --parents /var/consul
               sudo chown --recursive consul:consul /etc/consul.d
               sudo chown --recursive consul:consul /var/consul
-
               # Install Consul
               wget https://releases.hashicorp.com/consul/1.15.2/consul_1.15.2_linux_amd64.zip
               unzip consul_1.15.2_linux_amd64.zip

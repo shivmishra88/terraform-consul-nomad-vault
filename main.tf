@@ -80,7 +80,6 @@ resource "aws_instance" "node" {
               sudo hostnamectl set-hostname Node-${count.index}
               sudo apt-get update -y
               sudo apt-get install -y unzip jq
-              
               # Get private IP address
               private_ip=$(hostname -I | awk '{print $1}')
               
@@ -89,8 +88,7 @@ resource "aws_instance" "node" {
               echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
               sudo systemctl daemon-reload
               sudo service docker restart
-              
-              #########Contiv#########
+              #####Contiv#####
               sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
               sudo tar xvf netplugin-1.2.0.tar.bz2
               sudo cp netmaster /usr/local/bin/
@@ -100,20 +98,21 @@ resource "aws_instance" "node" {
               echo "${file("${path.module}/netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
               sudo service netmaster restart
               sudo service netplugin restart
-              
-        ######################################
               # Create consul user
               sudo useradd --system --home /etc/consul.d --shell /bin/false consul
               sudo mkdir --parents /etc/consul.d
               sudo mkdir --parents /var/consul
               sudo chown --recursive consul:consul /etc/consul.d
               sudo chown --recursive consul:consul /var/consul
+
               # Install Consul
               wget https://releases.hashicorp.com/consul/1.15.2/consul_1.15.2_linux_amd64.zip
               unzip consul_1.15.2_linux_amd64.zip
               sudo mv consul /usr/local/bin/
               sudo chmod 755 /usr/local/bin/consul
               sudo chown consul:consul /usr/local/bin/consul
+              # Copy the Consul configuration file and systemd service file
+              
               #Consul Template files
               if [ ${count.index} -eq 0 ]; then
                   echo "${file("${path.module}/consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
@@ -122,23 +121,26 @@ resource "aws_instance" "node" {
               else
                   echo "${file("${path.module}/consul-client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
               fi
-              echo "${file("${path.module}/consul.service")}" | sudo tee /etc/systemd/system/consul.service       
+              echo "${file("${path.module}/consul.service")}" | sudo tee /etc/systemd/system/consul.service
+           
               # Enable and start Consul
               sudo systemctl enable consul
               sudo systemctl start consul
+
               # Create nomad user
               sudo useradd --system --home /etc/nomad.d --shell /bin/false nomad
               sudo mkdir --parents /etc/nomad.d
               sudo mkdir --parents /var/nomad
               sudo chown --recursive nomad:nomad /etc/nomad.d
               sudo chown --recursive nomad:nomad /var/nomad
-              
+
               # Install Nomad
               wget https://releases.hashicorp.com/nomad/1.5.5/nomad_1.5.5_linux_amd64.zip
               unzip nomad_1.5.5_linux_amd64.zip
               sudo mv nomad /usr/local/bin/
               sudo chmod 755 /usr/local/bin/nomad
               sudo chown nomad:nomad /usr/local/bin/nomad
+
               # Copy the Nomad configuration file and systemd service file
               if [ ${count.index} -eq 0 ]; then
                   echo "${file("${path.module}/nomad.bootstrap.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
@@ -153,6 +155,8 @@ resource "aws_instance" "node" {
               sudo systemctl start nomad
               sudo service consul restart
               sudo service nomad restart
+
+
               # Install Vault
               if [ ${count.index} -eq 0 ]; then
                   echo "Installing Vault on Node-0..."
@@ -171,6 +175,7 @@ resource "aws_instance" "node" {
                   UNSEAL_KEY_1=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
                   UNSEAL_KEY_2=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
                   ROOT_TOKEN=$(cat /home/ubuntu/vault_init.txt | grep "Initial Root Token:" | awk '{print $NF}')
+
                   # Unseal Vault with two keys
                   vault operator unseal $UNSEAL_KEY_1
                   vault operator unseal $UNSEAL_KEY_2

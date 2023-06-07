@@ -94,8 +94,8 @@ resource "aws_instance" "node" {
               sudo cp netmaster /usr/local/bin/
               sudo cp netplugin /usr/local/bin/
               sudo cp netctl /usr/local/bin/
-              echo "${file("${path.module}/netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
-              echo "${file("${path.module}/netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+              echo "${file("${path.module}/netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
+              echo "${file("${path.module}/netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
               sudo service netmaster restart
               sudo service netplugin restart
               # Create consul user

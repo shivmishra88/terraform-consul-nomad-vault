@@ -104,7 +104,6 @@ resource "aws_instance" "node" {
     Name = "Node-${count.index}"
     Role = count.index < 3 ? "server" : "client"
   }
-
   subnet_id                   = aws_subnet.private_subnet_1.id : aws_subnet.private_subnet_2.id
   associate_public_ip_address = flase
   private_ip                  = "10.0.1.${count.index+10}"

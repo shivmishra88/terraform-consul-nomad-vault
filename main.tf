@@ -118,7 +118,7 @@ resource "aws_instance" "node" {
            
               # Enable and start Consul
               sudo systemctl enable consul
-              sudo systemctl start consul
+              sudo systemctl restart consul
 
               # Create nomad user
               sudo useradd --system --home /etc/nomad.d --shell /bin/false nomad

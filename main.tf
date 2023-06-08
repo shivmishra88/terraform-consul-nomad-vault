@@ -73,7 +73,10 @@ resource "aws_instance" "node" {
   private_ip                  = "10.0.1.${count.index+10}"
   key_name                    = "nomad-terraform"
   vpc_security_group_ids      = [aws_security_group.allow_all.id]
-
+  root_block_device {
+  volume_size = 100
+  volume_type = "gp2"
+  }
   user_data = <<-EOF
               #!/bin/bash
               exec > >(tee /home/ubuntu/user_data.log) 2>&1

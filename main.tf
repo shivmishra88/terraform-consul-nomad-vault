@@ -97,7 +97,7 @@ resource "aws_security_group" "allow_all" {
 resource "aws_instance" "node" {
   count = 7
 
-  ami           = "ami-042e8287309f5df03" # Ubuntu 20.04 LTS
+  ami           = "ami-053b0d53c279acc90" # Ubuntu 20.04 LTS
   instance_type = "t2.medium"
 
   tags = {

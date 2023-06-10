@@ -5,7 +5,7 @@ data "aws_availability_zones" "available" {
 resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr
   instance_tenancy     = "default"
-  tags                 = merge(var.tags, { "Name" = "${var.env}-vpc" })
+  tags                 = merge(var.tags, { "Name" = "${var.env}-taps-vpc" })
   enable_dns_hostnames = true
 }
 
@@ -121,5 +121,4 @@ resource "aws_security_group_rule" "ec2_sg_egress" {
   to_port           = 0
   type              = "egress"
 }
-
 

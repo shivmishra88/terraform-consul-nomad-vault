@@ -1,9 +1,6 @@
 #!/bin/bash
 exec > >(tee /home/ubuntu/user_data.log) 2>&1
-#sudo hostnamectl set-hostname "Node-$${count.index}"
-#sudo hostnamectl set-hostname "Node-${count.index}"
-instance_data=${count.index}
-sudo hostnamectl set-hostname "Node-$(curl -s http://169.254.169.254/latest/user-data | grep instance_data | awk -F'-' '{print $NF}')"
+sudo hostnamectl set-hostname "Node-${count.index}"
 sudo apt-get update -y
 sudo apt-get install -y unzip jq
 # Get private IP address

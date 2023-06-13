@@ -29,9 +29,9 @@ sudo chown consul:consul /usr/local/bin/consul
 # Copy the Consul configuration file and systemd service file
 
 #Consul Template files
-if [ ${count.index} -eq 0 ]; then
+if [ ${node_index} -eq 0 ]; then
     echo "${file("${path.module}/consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
-elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
+elif [ ${node_index} -eq 1 ] || [ ${node_index} -eq 2 ]; then
     echo "${file("${path.module}/consul-server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
 else
     echo "${file("${path.module}/consul-client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
@@ -57,9 +57,9 @@ sudo chmod 755 /usr/local/bin/nomad
 sudo chown nomad:nomad /usr/local/bin/nomad
 
 # Copy the Nomad configuration file and systemd service file
-if [ ${count.index} -eq 0 ]; then
+if [ ${node_index} -eq 0 ]; then
     echo "${file("${path.module}/nomad.bootstrap.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
-elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] ; then
+elif [ ${node_index} -eq 1 ] || [ ${node_index} -eq 2 ] ; then
     echo "${file("${path.module}/nomad-server.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
 else
     echo "${file("${path.module}/nomad-clients.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
@@ -73,7 +73,7 @@ sudo service nomad restart
 
 
 # Install Vault
-if [ ${count.index} -eq 0 ]; then
+if [ ${node_index} -eq 0 ]; then
     echo "Installing Vault on Node-0..."
     # Create vault user
     sudo useradd --system --home /etc/vault.d --shell /bin/false vault
@@ -97,7 +97,7 @@ if [ ${count.index} -eq 0 ]; then
     cd /home/ubuntu
     consul kv put vault_init.txt @/home/ubuntu/vault_init.txt
 ##########################Node-1 and Node-2####
-elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
+elif [ ${node_index} -eq 1 ] || [ ${node_index} -eq 2 ]; then
     echo "Installing Vault on Node-1 and Node-2..."
     #####
     sudo useradd --system --home /etc/vault.d --shell /bin/false vault

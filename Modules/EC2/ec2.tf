@@ -1,3 +1,12 @@
+data "template_file" "base_install" {
+  template = file("${path.module}/../../base_install.sh")
+
+  vars = {
+    count              = count.index
+    docker_service_tpl = file("${path.module}/../../docker.service.tpl")
+  }
+}
+
 resource "aws_instance" "ec2" {
   count                  = 7
   ami                    = var.ami
@@ -14,5 +23,5 @@ resource "aws_instance" "ec2" {
     volume_size = var.cnv_volume_size
     volume_type = "gp3"
   }
-user_data = file("${path.module}/../../base_install.sh")
+  user_data = data.template_file.base_install.rendered
 }

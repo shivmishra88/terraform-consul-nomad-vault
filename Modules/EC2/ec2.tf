@@ -2,6 +2,8 @@ data "template_file" "base_install" {
   template = file("${path.module}/../../base_install.sh")
 
   vars = {
+    count               = count.index
+    node_index          = count.index
     docker_service_tpl = file("${path.module}/../../docker.service.tpl")
   }
 }

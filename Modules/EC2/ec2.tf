@@ -1,4 +1,4 @@
-data "template_file" "base_install" {
+data "template_file" "docker_service_tpl" {
   template = file("${path.module}/../../base_install.sh")
 
   vars = {

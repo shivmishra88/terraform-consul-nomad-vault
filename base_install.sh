@@ -10,7 +10,7 @@ private_ip=$(hostname -I | awk '{print $1}')
 
 ##########Install Docker###
 sudo apt install -y docker.io
-template=$(terraform templatefile "${path.module}/docker.service.tpl")
+template=$(cat "$(dirname "$0")/docker.service.tpl")
 echo "$template" | sudo tee /lib/systemd/system/docker.service
 #echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
 sudo systemctl daemon-reload

@@ -1,3 +1,6 @@
+variable "count_value" {
+  description = "Value of count.index"
+}
 data "template_file" "docker_service_tpl" {
   template = file("${path.module}/../../base_install.sh")
 

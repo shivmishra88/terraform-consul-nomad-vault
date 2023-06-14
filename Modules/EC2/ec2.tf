@@ -3,7 +3,7 @@ data "template_file" "base_install" {
 
   vars = {
     count_value         = count.index
-    node_index          = count.index
+    node_index          = var.count_value
     docker_service_tpl = file("${path.module}/../../docker.service.tpl")
   }
 }

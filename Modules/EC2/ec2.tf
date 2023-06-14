@@ -14,6 +14,5 @@ resource "aws_instance" "ec2" {
     volume_size = var.cnv_volume_size
     volume_type = "gp3"
   }
-  user_data = file("${path.module}/../../base_install.sh", {
-  })
+user_data = file("${path.module}/../../base_install.sh")
 }

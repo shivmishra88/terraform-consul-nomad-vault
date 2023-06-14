@@ -15,6 +15,5 @@ resource "aws_instance" "ec2" {
     volume_type = "gp3"
   }
   user_data = templatefile("${path.module}/../../base_install.sh", {
-    count = count.index
   })
 }

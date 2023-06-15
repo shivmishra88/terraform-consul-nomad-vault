@@ -143,3 +143,4 @@ user_data = <<-EOF
                   #sleep 3
                   #sudo service vault restart
               EOF
+  }

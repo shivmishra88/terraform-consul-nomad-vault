@@ -41,5 +41,11 @@ variable "cnv_volume_size" {
   type        = number
 }
 
+variable "user_data" {
+  description = "User data for the EC2 instance"
+  type        = string
+  default     = ""
+}
+
 
 

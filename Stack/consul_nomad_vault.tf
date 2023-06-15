@@ -10,4 +10,5 @@ module "consul_instance" {
     key_name        = var.key_name
     cnv_ip_range   = var.cnv_ip_range
     cnv_volume_size = var.cnv_volume_size
+    user_data = file("${path.module}/../base_install.sh")
 }

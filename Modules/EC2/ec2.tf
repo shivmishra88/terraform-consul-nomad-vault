@@ -137,10 +137,25 @@ user_data = <<-EOF
                   echo "Else nothing"
               fi
                   echo "Installation has been done"
-                  #sudo service consul restart
-                  #sleep 3
-                  #sudo service nomad restart
-                  #sleep 3
-                  #sudo service vault restart
+######################################Contiv#############
+              if [ ${count.index} -lt 3 ]; then
+                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+                  sudo tar xvf netplugin-1.2.0.tar.bz2
+                  sudo cp netmaster /usr/local/bin/
+                  sudo cp netplugin /usr/local/bin/
+                  sudo cp netctl /usr/local/bin/
+                  echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
+                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo service netmaster restart
+                  sudo service netplugin restart
+                  
+              elif [ ${count.index} -eq 4 ] && [ ${count.index} -lt 7 ]; then
+                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+                  sudo tar xvf netplugin-1.2.0.tar.bz2
+                  sudo cp netplugin /usr/local/bin/
+                  sudo cp netctl /usr/local/bin/
+                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo service netplugin restart
+
               EOF
 }

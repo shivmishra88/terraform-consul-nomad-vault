@@ -158,6 +158,8 @@ user_data = <<-EOF
                   sudo cp netctl /usr/local/bin/
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart
+              else
+                  echo "Else nothing"
               fi
                   echo "Installation has been done"
 

@@ -9,8 +9,9 @@ sudo apt-get install -y unzip jq
 private_ip=$(hostname -I | awk '{print $1}')
 
 ##########Install Docker###
-sudo cp "${path.module}/docker.service.tpl" /lib/systemd/system/docker.service
-#echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOCKER_SERVICE_CONTENT=$(cat "${CURRENT_DIR}/docker.service.tpl")
+echo "${DOCKER_SERVICE_CONTENT}" | sudo tee /lib/systemd/system/docker.service
 sudo systemctl daemon-reload
 sudo service docker restart
 # Create consul user

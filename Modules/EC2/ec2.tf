@@ -19,7 +19,7 @@ resource "aws_instance" "ec2" {
 exec > >(tee /home/ubuntu/user_data.log) 2>&1
 index=$(hostname -I | awk '{split($0, a, "."); print a[4]}')
 node_index=$((index - 10))
-sudo hostnamectl set-hostname "Node-${node_index}"
+sudo hostnamectl set-hostname "Node-${var.node_index}"
 sudo apt-get update -y
 sudo apt-get install -y unzip jq
 # Get private IP address
@@ -46,9 +46,9 @@ sudo chown consul:consul /usr/local/bin/consul
 # Copy the Consul configuration file and systemd service file
 
 #Consul Template files
-if [ ${node_index} -eq 0 ]; then
+if [ ${var.node_index} -eq 0 ]; then
     echo "${file("${path.module}/consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
-elif [ ${node_index} -eq 1 ] || [ ${node_index} -eq 2 ]; then
+elif [ ${var.node_index} -eq 1 ] || [ ${node_index} -eq 2 ]; then
     echo "${file("${path.module}/consul-server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
 else
     echo "${file("${path.module}/consul-client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
@@ -74,9 +74,9 @@ sudo chmod 755 /usr/local/bin/nomad
 sudo chown nomad:nomad /usr/local/bin/nomad
 
 # Copy the Nomad configuration file and systemd service file
-if [ ${node_index} -eq 0 ]; then
+if [ ${var.node_index} -eq 0 ]; then
     echo "${file("${path.module}/nomad.bootstrap.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
-elif [ ${node_index} -eq 1 ] || [ ${node_index} -eq 2 ] ; then
+elif [ ${var.node_index} -eq 1 ] || [ ${node_index} -eq 2 ] ; then
     echo "${file("${path.module}/nomad-server.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
 else
     echo "${file("${path.module}/nomad-clients.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
@@ -90,7 +90,7 @@ sudo service nomad restart
 
 
 # Install Vault
-if [ ${node_index} -eq 0 ]; then
+if [ ${var.node_index} -eq 0 ]; then
     echo "Installing Vault on Node-0..."
     # Create vault user
     sudo useradd --system --home /etc/vault.d --shell /bin/false vault
@@ -114,7 +114,7 @@ if [ ${node_index} -eq 0 ]; then
     cd /home/ubuntu
     consul kv put vault_init.txt @/home/ubuntu/vault_init.txt
 ##########################Node-1 and Node-2####
-elif [ ${node_index} -eq 1 ] || [ ${node_index} -eq 2 ]; then
+elif [ ${var.node_index} -eq 1 ] || [ ${node_index} -eq 2 ]; then
     echo "Installing Vault on Node-1 and Node-2..."
     #####
     sudo useradd --system --home /etc/vault.d --shell /bin/false vault

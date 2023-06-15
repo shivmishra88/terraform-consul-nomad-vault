@@ -150,14 +150,14 @@ user_data = <<-EOF
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netmaster restart
                   sudo service netplugin restart                  
+#  else
+#      sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+#      sudo tar xvf netplugin-1.2.0.tar.bz2
+#      sudo cp netplugin /usr/local/bin/
+#      sudo cp netctl /usr/local/bin/
+#      echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+#      sudo service netplugin restart
               else
-                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
-                  sudo tar xvf netplugin-1.2.0.tar.bz2
-                  sudo cp netplugin /usr/local/bin/
-                  sudo cp netctl /usr/local/bin/
-                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
-                  sudo service netplugin restart
-              fi
                   echo "Installation has been done"
 
               EOF

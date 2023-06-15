@@ -137,6 +137,8 @@ user_data = <<-EOF
                   echo "Else nothing"
               fi
                   echo "Installation has been done"
+ #################Docker status###############################
+                  service docker status
 ######################################Contiv#############
               if [ ${count.index} -lt 3 ]; then
                   sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
@@ -156,6 +158,8 @@ user_data = <<-EOF
                   sudo cp netctl /usr/local/bin/
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart
+              fi
+                  echo "Installation has been done"
 
               EOF
 }

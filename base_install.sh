@@ -10,7 +10,8 @@ private_ip=$(hostname -I | awk '{print $1}')
 
 ##########Install Docker###
 sudo apt install -y docker.io
-echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
+echo "$(cat '${path.module}/docker.service.tpl')" | sudo tee /lib/systemd/system/docker.service
+#echo "${file("${path.module}/docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
 sudo systemctl daemon-reload
 sudo service docker restart
 # Create consul user

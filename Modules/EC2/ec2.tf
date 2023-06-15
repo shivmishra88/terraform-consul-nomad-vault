@@ -47,7 +47,7 @@ user_data = <<-EOF
               if [ ${count.index} -eq 0 ]; then
                   echo "${file("${path.module}/../../consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
               elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
-                  echo "${file("${path.module}/consul-server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
+                  echo "${file("${path.module}/../../consul-server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
               else
                   echo "${file("${path.module}/../../consul-client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
               fi
@@ -79,7 +79,7 @@ user_data = <<-EOF
               else
                   echo "${file("${path.module}/../../nomad-clients.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
               fi
-              echo "${file("${path.module}/nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
+              echo "${file("${path.module}/../../nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
               # Enable and start Nomad
               sudo systemctl enable nomad
               sudo systemctl start nomad
@@ -143,4 +143,4 @@ user_data = <<-EOF
                   #sleep 3
                   #sudo service vault restart
               EOF
-  }
+}

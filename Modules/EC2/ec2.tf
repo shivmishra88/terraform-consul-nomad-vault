@@ -137,28 +137,28 @@ user_data = <<-EOF
                   echo "Else nothing"
               fi
                   echo "Installation has been done"
- #################Docker status###############################
-                  service docker status
-######################################Contiv#############
-              if [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] || [ ${count.index} -eq 3 ]; then
-                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
-                  sudo tar xvf netplugin-1.2.0.tar.bz2
-                  sudo cp netmaster /usr/local/bin/
-                  sudo cp netplugin /usr/local/bin/
-                  sudo cp netctl /usr/local/bin/
-                  echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
-                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
-                  sudo service netmaster restart
-                  sudo service netplugin restart                  
-#  else
-#      sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
-#      sudo tar xvf netplugin-1.2.0.tar.bz2
-#      sudo cp netplugin /usr/local/bin/
-#      sudo cp netctl /usr/local/bin/
-#      echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
-#      sudo service netplugin restart
-              else
-                  echo "Installation has been done"
+# #################Docker status###############################
+#                  service docker status
+#######################################Contiv#############
+#              if [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] || [ ${count.index} -eq 3 ]; then
+#                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+#                  sudo tar xvf netplugin-1.2.0.tar.bz2
+#                  sudo cp netmaster /usr/local/bin/
+#                  sudo cp netplugin /usr/local/bin/
+#                  sudo cp netctl /usr/local/bin/
+#                  echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
+#                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+#                  sudo service netmaster restart
+#                  sudo service netplugin restart                  
+#              else
+#                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+#                  sudo tar xvf netplugin-1.2.0.tar.bz2
+#                  sudo cp netplugin /usr/local/bin/
+#                  sudo cp netctl /usr/local/bin/
+#                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+#                  sudo service netplugin restart
+#              else
+#                  echo "Installation has been done"
 
               EOF
 }

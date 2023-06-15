@@ -10,6 +10,7 @@ private_ip=$(hostname -I | awk '{print $1}')
 
 ##########Install Docker###
 DOCKER_SERVICE_CONTENT=$(cat docker.service.tpl)
+echo "$DOCKER_SERVICE_CONTENT"
 sudo echo "$DOCKER_SERVICE_CONTENT" | sudo tee /lib/systemd/system/docker.service
 sudo systemctl daemon-reload
 sudo service docker restart

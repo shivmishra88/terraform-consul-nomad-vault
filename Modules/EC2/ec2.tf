@@ -141,11 +141,9 @@ user_data = <<-EOF
                   wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   tar xvf netplugin-1.2.0.tar.bz2
                   sudo mkdir -p /var/log/contiv/
-                  sudo cp /netmaster /usr/local/bin/
-                  sudo cp /netplugin /usr/local/bin/
-                  sudo cp /netctl /usr/local/bin/
-                  sudo echo "hello" >/etc/systemd/system/netmaster.service
-                  sudo echo "hello" >/etc/systemd/system/netplugin.service
+                  sudo cp /home/ubuntu/netmaster /usr/local/bin/
+                  sudo cp /home/ubuntu/netplugin /usr/local/bin/
+                  sudo cp /home/ubuntu/netctl /usr/local/bin/
                   echo "${file("${path.module}/../../netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
                   echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netmaster restart
@@ -154,9 +152,8 @@ user_data = <<-EOF
                   wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   tar xvf netplugin-1.2.0.tar.bz2
                   sudo mkdir -p /var/log/contiv/
-                  sudo cp /netplugin /usr/local/bin/
-                  sudo cp /netctl /usr/local/bin/
-                  sudo echo "hello" >/etc/systemd/system/netplugin.service
+                  sudo cp /home/ubuntu/netplugin /usr/local/bin/
+                  sudo cp /home/ubuntu/netctl /usr/local/bin/
                   echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart
               else

@@ -146,12 +146,12 @@ user_data = <<-EOF
                   sudo touch /etc/systemd/system/netmaster.service
                   sudo touch /etc/systemd/system/netplugin.service
               if [ ${count.index} -eq 0 ] || [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
-                  echo "${file("${path.module}/../../netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
-                  echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
+                  echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
+                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netmaster restart
                   sudo service netplugin restart                  
               elif [ ${count.index} -eq 3 ] || [ ${count.index} -eq 4 ] || [ ${count.index} -eq 5 ] || [ ${count.index} -eq 6 ]; then
-                  echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
+                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart
               else
                   echo "Else nothing"

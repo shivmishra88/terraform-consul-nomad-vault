@@ -144,6 +144,8 @@ user_data = <<-EOF
                   sudo cp /home/ubuntu/netmaster /usr/local/bin/
                   sudo cp /home/ubuntu/netplugin /usr/local/bin/
                   sudo cp /home/ubuntu/netctl /usr/local/bin/
+                  sudo touch /etc/systemd/system/netmaster.service
+                  sudo touch /etc/systemd/system/netplugin.service
                   echo "${file("${path.module}/../../netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
                   echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netmaster restart
@@ -154,6 +156,7 @@ user_data = <<-EOF
                   sudo mkdir -p /var/log/contiv/
                   sudo cp /home/ubuntu/netplugin /usr/local/bin/
                   sudo cp /home/ubuntu/netctl /usr/local/bin/
+                  sudo touch /etc/systemd/system/netplugin.service
                   echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart
               else

@@ -137,12 +137,9 @@ user_data = <<-EOF
               fi
                   echo "Installation has been done"
                #################################################Contiv########
-                  wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
-                  tar xvf netplugin-1.2.0.tar.bz2
+                  wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2 -P /home/ubuntu
+                  sudo tar xvf /home/ubuntu/netplugin-1.2.0.tar.bz2 -C /usr/local/bin/
                   sudo mkdir -p /var/log/contiv/
-                  sudo cp /home/ubuntu/netmaster /usr/local/bin/
-                  sudo cp /home/ubuntu/netplugin /usr/local/bin/
-                  sudo cp /home/ubuntu/netctl /usr/local/bin/
                   sudo touch /etc/systemd/system/netmaster.service
                   sudo touch /etc/systemd/system/netplugin.service
                   sudo apt install -y openvswitch-switch

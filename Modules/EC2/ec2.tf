@@ -42,32 +42,6 @@ user_data = <<-EOF
               sudo mv consul /usr/local/bin/
               sudo chmod 755 /usr/local/bin/consul
               sudo chown consul:consul /usr/local/bin/consul
-              # Copy the Consul configuration file and systemd service file
-              #################################################Contiv########
-              if [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] || [ ${count.index} -eq 3 ]; then 
-                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
-                  sudo tar xvf netplugin-1.2.0.tar.bz2
-                  sudo cp /netmaster /usr/local/bin/
-                  sudo cp /netplugin /usr/local/bin/
-                  sudo cp /netctl /usr/local/bin/
-                  sudo mkdir -p /var/log/contiv/
-                  sudo touch /etc/systemd/system/netmaster.service
-                  sudo touch /etc/systemd/system/netplugin.service
-                  echo "${file("${path.module}/../../netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
-                  echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
-                  sudo service netmaster restart
-                  sudo service netplugin restart                  
-              else
-                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
-                  sudo tar xvf netplugin-1.2.0.tar.bz2
-                  sudo cp /netplugin /usr/local/bin/
-                  sudo cp /netctl /usr/local/bin/
-                  sudo mkdir -p /var/log/contiv/
-                  sudo touch /etc/systemd/system/netplugin.service
-                  echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
-                  sudo service netplugin restart
-              fi
-                  echo "Installation has been done"
               #Consul Template files
               if [ ${count.index} -eq 0 ]; then
                   echo "${file("${path.module}/../../consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
@@ -158,6 +132,33 @@ user_data = <<-EOF
                   # Unseal Vault with two keys
                   vault operator unseal $UNSEAL_KEY_1
                   vault operator unseal $UNSEAL_KEY_2
+              else
+                  echo "Else nothing"
+              fi
+                  echo "Installation has been done"
+               #################################################Contiv########
+              if [ ${count.index} -eq 0 ] || [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then 
+                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+                  sudo tar xvf netplugin-1.2.0.tar.bz2
+                  sudo mkdir -p /var/log/contiv/
+                  sudo cp /netmaster /usr/local/bin/
+                  sudo cp /netplugin /usr/local/bin/
+                  sudo cp /netctl /usr/local/bin/
+                  sudo touch /etc/systemd/system/netmaster.service
+                  sudo touch /etc/systemd/system/netplugin.service
+                  cat "${file("${path.module}/../../netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
+                  cat "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo service netmaster restart
+                  sudo service netplugin restart                  
+              elif [ ${count.index} -eq 3 ] || [ ${count.index} -eq 4 ] || [ ${count.index} -eq 5 ] || [ ${count.index} -eq 6 ]; then 
+                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+                  sudo tar xvf netplugin-1.2.0.tar.bz2
+                  sudo mkdir -p /var/log/contiv/
+                  sudo cp /netplugin /usr/local/bin/
+                  sudo cp /netctl /usr/local/bin/
+                  sudo touch /etc/systemd/system/netplugin.service
+                  cat "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo service netplugin restart
               else
                   echo "Else nothing"
               fi

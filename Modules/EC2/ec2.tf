@@ -137,27 +137,27 @@ user_data = <<-EOF
               fi
                   echo "Installation has been done"
                #################################################Contiv########
-              if [ ${count.index} -eq 0 ] || [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then 
+              if [ ${count.index} -eq 0 ] || [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
+                  sudo touch /etc/systemd/system/netmaster.service
+                  sudo touch /etc/systemd/system/netplugin.service
+                  echo "${file("${path.module}/../../netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
+                  echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
                   wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   tar xvf netplugin-1.2.0.tar.bz2
                   sudo mkdir -p /var/log/contiv/
                   sudo cp /home/ubuntu/netmaster /usr/local/bin/
                   sudo cp /home/ubuntu/netplugin /usr/local/bin/
                   sudo cp /home/ubuntu/netctl /usr/local/bin/
-                  sudo touch /etc/systemd/system/netmaster.service
-                  sudo touch /etc/systemd/system/netplugin.service
-                  echo ${file("${path.module}/../../netmaster.service")} | sudo tee /etc/systemd/system/netmaster.service
-                  echo ${file("${path.module}/../../netplugin.service")} | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netmaster restart
                   sudo service netplugin restart                  
-              elif [ ${count.index} -eq 3 ] || [ ${count.index} -eq 4 ] || [ ${count.index} -eq 5 ] || [ ${count.index} -eq 6 ]; then 
+              elif [ ${count.index} -eq 3 ] || [ ${count.index} -eq 4 ] || [ ${count.index} -eq 5 ] || [ ${count.index} -eq 6 ]; then
+                  sudo touch /etc/systemd/system/netplugin.service
+                  echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
                   wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   tar xvf netplugin-1.2.0.tar.bz2
                   sudo mkdir -p /var/log/contiv/
                   sudo cp /home/ubuntu/netplugin /usr/local/bin/
                   sudo cp /home/ubuntu/netctl /usr/local/bin/
-                  sudo touch /etc/systemd/system/netplugin.service
-                  echo ${file("${path.module}/../../netplugin.service")} | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart
               else
                   echo "Else nothing"

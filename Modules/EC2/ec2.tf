@@ -42,7 +42,26 @@ user_data = <<-EOF
               sudo chmod 755 /usr/local/bin/consul
               sudo chown consul:consul /usr/local/bin/consul
               # Copy the Consul configuration file and systemd service file
-              
+              #################################################Contiv########
+              if [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] || [ ${count.index} -eq 3 ]; then
+                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+                  sudo tar xvf netplugin-1.2.0.tar.bz2
+                  sudo cp netmaster /usr/local/bin/
+                  sudo cp netplugin /usr/local/bin/
+                  sudo cp netctl /usr/local/bin/
+                  echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
+                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo service netmaster restart
+                  sudo service netplugin restart                  
+              else
+                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+                  sudo tar xvf netplugin-1.2.0.tar.bz2
+                  sudo cp netplugin /usr/local/bin/
+                  sudo cp netctl /usr/local/bin/    
+                  echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo service netplugin restart
+              fi
+                  echo "Installation has been done"
               #Consul Template files
               if [ ${count.index} -eq 0 ]; then
                   echo "${file("${path.module}/../../consul-server-bootstrap.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl

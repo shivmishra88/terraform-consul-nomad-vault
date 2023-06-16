@@ -138,7 +138,7 @@ user_data = <<-EOF
                   echo "Installation has been done"
                #################################################Contiv########
               if [ ${count.index} -eq 0 ] || [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then 
-                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+                  wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   sudo tar xvf netplugin-1.2.0.tar.bz2
                   sudo mkdir -p /var/log/contiv/
                   sudo cp /netmaster /usr/local/bin/
@@ -151,7 +151,7 @@ user_data = <<-EOF
                   sudo service netmaster restart
                   sudo service netplugin restart                  
               elif [ ${count.index} -eq 3 ] || [ ${count.index} -eq 4 ] || [ ${count.index} -eq 5 ] || [ ${count.index} -eq 6 ]; then 
-                  sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
+                  wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   sudo tar xvf netplugin-1.2.0.tar.bz2
                   sudo mkdir -p /var/log/contiv/
                   sudo cp /netplugin /usr/local/bin/

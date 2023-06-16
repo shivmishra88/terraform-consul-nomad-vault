@@ -50,6 +50,7 @@ user_data = <<-EOF
                   sudo cp /netmaster /usr/local/bin/
                   sudo cp /netplugin /usr/local/bin/
                   sudo cp netctl /usr/local/bin/
+                  sudo mkdir -p /var/log/contiv/
                   sudo touch /etc/systemd/system/netmaster.service
                   sudo touch /etc/systemd/system/netplugin.service
                   echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
@@ -60,6 +61,7 @@ user_data = <<-EOF
                   sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   sudo tar xvf netplugin-1.2.0.tar.bz2
                   sudo cp /netplugin /usr/local/bin/
+                  sudo mkdir -p /var/log/contiv/
                   sudo touch /etc/systemd/system/netplugin.service
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart

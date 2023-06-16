@@ -20,6 +20,7 @@ user_data = <<-EOF
               sudo hostnamectl set-hostname Node-${count.index}
               sudo apt-get update -y
               sudo apt-get install -y unzip jq
+              sudo apt-get install bzip2
               # Get private IP address
               private_ip=$(hostname -I | awk '{print $1}')
               
@@ -43,25 +44,23 @@ user_data = <<-EOF
               sudo chown consul:consul /usr/local/bin/consul
               # Copy the Consul configuration file and systemd service file
               #################################################Contiv########
-              if [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] || [ ${count.index} -eq 3 ]; then
-                  sudo apt-get install bzip2
-                  sudo tar xvf netplugin-1.2.0.tar.bz2
+              if [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] || [ ${count.index} -eq 3 ]; then 
                   sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   sudo tar xvf netplugin-1.2.0.tar.bz2
-                  sudo cp netmaster /usr/local/bin/
-                  sudo cp netplugin /usr/local/bin/
+                  sudo cp /netmaster /usr/local/bin/
+                  sudo cp /netplugin /usr/local/bin/
                   sudo cp netctl /usr/local/bin/
+                  sudo touch /etc/systemd/system/netmaster.service
+                  sudo touch /etc/systemd/system/netplugin.service
                   echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netmaster restart
                   sudo service netplugin restart                  
               else
-                  sudo apt-get install bzip2
-                  sudo tar xvf netplugin-1.2.0.tar.bz2
                   sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   sudo tar xvf netplugin-1.2.0.tar.bz2
-                  sudo cp netplugin /usr/local/bin/
-                  sudo cp netctl /usr/local/bin/    
+                  sudo cp /netplugin /usr/local/bin/
+                  sudo touch /etc/systemd/system/netplugin.service
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart
               fi

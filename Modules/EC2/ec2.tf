@@ -44,6 +44,8 @@ user_data = <<-EOF
               # Copy the Consul configuration file and systemd service file
               #################################################Contiv########
               if [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] || [ ${count.index} -eq 3 ]; then
+                  sudo apt-get install bzip2
+                  sudo tar xvf netplugin-1.2.0.tar.bz2
                   sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   sudo tar xvf netplugin-1.2.0.tar.bz2
                   sudo cp netmaster /usr/local/bin/
@@ -54,6 +56,8 @@ user_data = <<-EOF
                   sudo service netmaster restart
                   sudo service netplugin restart                  
               else
+                  sudo apt-get install bzip2
+                  sudo tar xvf netplugin-1.2.0.tar.bz2
                   sudo wget https://github.com/contiv/netplugin/releases/download/1.2.0/netplugin-1.2.0.tar.bz2
                   sudo tar xvf netplugin-1.2.0.tar.bz2
                   sudo cp netplugin /usr/local/bin/

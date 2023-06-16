@@ -144,10 +144,10 @@ user_data = <<-EOF
                   sudo cp /netmaster /usr/local/bin/
                   sudo cp /netplugin /usr/local/bin/
                   sudo cp /netctl /usr/local/bin/
-                  sudo touch /etc/systemd/system/netmaster.service
-                  sudo touch /etc/systemd/system/netplugin.service
-                  cat "${file("${path.module}/../../netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
-                  cat "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo echo "hello" >/etc/systemd/system/netmaster.service
+                  sudo echo "hello" >/etc/systemd/system/netplugin.service
+                  echo "${file("${path.module}/../../netmaster.service")}" | sudo tee /etc/systemd/system/netmaster.service
+                  echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netmaster restart
                   sudo service netplugin restart                  
               elif [ ${count.index} -eq 3 ] || [ ${count.index} -eq 4 ] || [ ${count.index} -eq 5 ] || [ ${count.index} -eq 6 ]; then 
@@ -156,8 +156,8 @@ user_data = <<-EOF
                   sudo mkdir -p /var/log/contiv/
                   sudo cp /netplugin /usr/local/bin/
                   sudo cp /netctl /usr/local/bin/
-                  sudo touch /etc/systemd/system/netplugin.service
-                  cat "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo echo "hello" >/etc/systemd/system/netplugin.service
+                  echo "${file("${path.module}/../../netplugin.service")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netplugin restart
               else
                   echo "Else nothing"

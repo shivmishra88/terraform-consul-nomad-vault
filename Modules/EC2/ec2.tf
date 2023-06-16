@@ -146,6 +146,7 @@ user_data = <<-EOF
                   sudo touch /etc/systemd/system/netmaster.service
                   sudo touch /etc/systemd/system/netplugin.service
               if [ ${count.index} -eq 0 ] || [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
+                  echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /home/ubuntu/netmaster.service
                   echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
                   sudo service netmaster restart

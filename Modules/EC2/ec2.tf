@@ -145,13 +145,18 @@ user_data = <<-EOF
                   sudo cp /home/ubuntu/netctl /usr/local/bin/
                   sudo touch /etc/systemd/system/netmaster.service
                   sudo touch /etc/systemd/system/netplugin.service
+                  sudo apt install -y openvswitch-switch
               if [ ${count.index} -eq 0 ] || [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ]; then
                   echo "${file("${path.module}/../../netmaster.service.tpl")}" | sudo tee /etc/systemd/system/netmaster.service
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo service openvswitch-switch restart
+                  sudo /usr/share/openvswitch/scripts/ovs-ctl restart
                   sudo service netmaster restart
-                  sudo service netplugin restart                  
+                  sudo service netplugin restart
               elif [ ${count.index} -eq 3 ] || [ ${count.index} -eq 4 ] || [ ${count.index} -eq 5 ] || [ ${count.index} -eq 6 ]; then
                   echo "${file("${path.module}/../../netplugin.service.tpl")}" | sudo tee /etc/systemd/system/netplugin.service
+                  sudo service openvswitch-switch restart
+                  sudo /usr/share/openvswitch/scripts/ovs-ctl restart
                   sudo service netplugin restart
               else
                   echo "Else nothing"

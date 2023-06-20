@@ -193,6 +193,14 @@ user_data = <<-EOF
                   sudo bash /opt/install_solr_service.sh /opt/solr-8.11.2.tgz
                   sudo /opt/solr/bin/solr stop  -p  8983
                   sudo /opt/solr/bin/solr start -c -s  /opt/solr/server/solr -p 8983 -z 10.0.1.17:2181,10.0.1.18:2181,10.0.1.19:2181 -noprompt -force
+                  sudo echo "deb https://debian.datastax.com/enterprise/ stable main" | sudo tee -a /etc/apt/sources.list.d/datastax.sources.list
+                  sudo curl -L https://debian.datastax.com/debian/repo_key | sudo apt-key add -
+                  sudo apt-get update
+                  sudo apt-get install dse-full -y
+                  sudo systemctl daemon-reload
+                  sudo service dse start
+                  echo "${file("${path.module}/../../cassandra.yaml.tpl")}" | sudo tee /etc/dse/cassandra/cassandra.yaml
+                  sudo service dse restart
                else
                   echo "Installation is completed"
                fi

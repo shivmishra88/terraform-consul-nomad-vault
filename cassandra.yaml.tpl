@@ -77,14 +77,11 @@ server_encryption_options:
     keystore_password: cassandra
     truststore: resources/dse/conf/.truststore
     truststore_password: cassandra
-
 client_encryption_options:
     enabled: false
-    # If enabled and optional is set to true, encrypted and unencrypted connections over native transport are handled.
     optional: false
     keystore: resources/dse/conf/.keystore
     keystore_password: cassandra
-
 internode_compression: dc
 inter_dc_tcp_nodelay: false
 tracetype_query_ttl: 86400
@@ -103,8 +100,6 @@ transparent_data_encryption_options:
     chunk_length_kb: 64
     cipher: AES/CBC/PKCS5Padding
     key_alias: testing:1
-    # CBC IV length for AES must be 16 bytes, the default size
-    # iv_length: 16
     key_provider:
       - class_name: org.apache.cassandra.security.JKSKeyProvider
         parameters:
@@ -112,7 +107,6 @@ transparent_data_encryption_options:
             keystore_password: cassandra
             store_type: JCEKS
             key_password: cassandra
-
 back_pressure_enabled: false
 back_pressure_strategy:
     - class_name: org.apache.cassandra.net.RateBasedBackPressure
@@ -121,7 +115,6 @@ back_pressure_strategy:
           factor: 5
           flow: FAST
 continuous_paging:
-    # The maximum number of concurrent sessions, any additional session will be rejected with an unavailable error.
     max_concurrent_sessions: 60
     max_session_pages: 4
     max_page_size_mb: 8

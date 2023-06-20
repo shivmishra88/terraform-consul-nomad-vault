@@ -1,11 +1,9 @@
-# consul.service
 [Unit]
 Description="HashiCorp Consul - A service mesh solution"
 Documentation=https://www.consul.io/
 Requires=network-online.target
 After=network-online.target
 ConditionFileNotEmpty=/etc/consul.d/consul.hcl
-
 [Service]
 User=consul
 Group=consul
@@ -17,6 +15,5 @@ LimitNOFILE=65536
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=consul
-
 [Install]
 WantedBy=multi-user.target

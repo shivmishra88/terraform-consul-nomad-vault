@@ -10,7 +10,6 @@ resource "aws_instance" "ec2" {
         Name = "CNV-${count.index}"
    #     Role = count.index < 3 ? "server" : "client"
         Role = count.index < 3 ? "server" : count.index < 7 ? "client" : "solr-dse"
-
     }
     root_block_device {
     volume_size = var.cnv_volume_size
@@ -26,20 +25,21 @@ user_data = <<-EOF
               sudo apt-get install default-jdk -y
               sudo apt-get install bzip2
               # Get private IP address
-              private_ip=$(hostname -I | awk '{print $1}')
-              
+              private_ip=$(hostname -I | awk '{print $1}')             
               ##########Install Docker###
+              if [ ${count.index} -lt 7 ]; then
               sudo apt install -y docker.io
               echo "${file("${path.module}/../../docker.service.tpl")}" | sudo tee /lib/systemd/system/docker.service
               sudo systemctl daemon-reload
               sudo service docker restart
+              fi
+              echo "Docker installed"
               # Create consul user
               sudo useradd --system --home /etc/consul.d --shell /bin/false consul
               sudo mkdir --parents /etc/consul.d
               sudo mkdir --parents /var/consul
               sudo chown --recursive consul:consul /etc/consul.d
               sudo chown --recursive consul:consul /var/consul
-
               # Install Consul
               wget https://releases.hashicorp.com/consul/1.15.2/consul_1.15.2_linux_amd64.zip
               unzip consul_1.15.2_linux_amd64.zip
@@ -67,14 +67,12 @@ user_data = <<-EOF
               sudo mkdir --parents /var/nomad
               sudo chown --recursive nomad:nomad /etc/nomad.d
               sudo chown --recursive nomad:nomad /var/nomad
-
               # Install Nomad
               wget https://releases.hashicorp.com/nomad/1.5.5/nomad_1.5.5_linux_amd64.zip
               unzip nomad_1.5.5_linux_amd64.zip
               sudo mv nomad /usr/local/bin/
               sudo chmod 755 /usr/local/bin/nomad
-              sudo chown nomad:nomad /usr/local/bin/nomad
-              
+              sudo chown nomad:nomad /usr/local/bin/nomad 
               else
                   echo "Nomad installed on 7 nodes"
 
@@ -96,8 +94,6 @@ user_data = <<-EOF
               sudo service nomad restart
               fi
               echo "Nomad client and server done"
-
-
               # Install Vault
               if [ ${count.index} -eq 0 ]; then
                   echo "Installing Vault on Node-0..."
@@ -116,7 +112,6 @@ user_data = <<-EOF
                   UNSEAL_KEY_1=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 1:" | awk '{print $NF}')
                   UNSEAL_KEY_2=$(cat /home/ubuntu/vault_init.txt | grep "Unseal Key 2:" | awk '{print $NF}')
                   ROOT_TOKEN=$(cat /home/ubuntu/vault_init.txt | grep "Initial Root Token:" | awk '{print $NF}')
-
                   # Unseal Vault with two keys
                   vault operator unseal $UNSEAL_KEY_1
                   vault operator unseal $UNSEAL_KEY_2
@@ -188,13 +183,10 @@ user_data = <<-EOF
                   sudo echo "3" > /var/lib/zookeeper/data/myid
                 fi
 
-
                 if [ ${count.index} -ge 7 ] && [ ${count.index} -le 9 ]; then
                   sudo /opt/zookeeper/bin/zkServer.sh start
                 fi
                 fi
-
-
                if [[ ${count.index} -ge 7 && ${count.index} -le 11 ]]; then
                   wget https://dlcdn.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz -P /opt
                   sudo tar -xzf /opt/solr-8.11.2.tgz -C /opt solr-8.11.2/bin/install_solr_service.sh --strip-components=2
@@ -205,6 +197,5 @@ user_data = <<-EOF
                   echo "Installation is completed"
                fi
                   echo "Installation has been done"
-
               EOF
 }

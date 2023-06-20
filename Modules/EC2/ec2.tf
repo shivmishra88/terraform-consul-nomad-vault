@@ -1,5 +1,5 @@
 resource "aws_instance" "ec2" {
-  count = 7
+  count = 12
   ami                    = var.ami
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
@@ -8,7 +8,9 @@ resource "aws_instance" "ec2" {
   private_ip             = "${var.cnv_ip_range}${count.index+10}"
   tags = {
         Name = "CNV-${count.index}"
-        Role = count.index < 3 ? "server" : "client"
+   #     Role = count.index < 3 ? "server" : "client"
+        Role = count.index < 3 ? "server" : count.index < 7 ? "client" : "solr-dse"
+
     }
     root_block_device {
     volume_size = var.cnv_volume_size
@@ -20,6 +22,8 @@ user_data = <<-EOF
               sudo hostnamectl set-hostname Node-${count.index}
               sudo apt-get update -y
               sudo apt-get install -y unzip jq
+              sudo apt-get install net-tools
+              sudo apt-get install default-jdk -y
               sudo apt-get install bzip2
               # Get private IP address
               private_ip=$(hostname -I | awk '{print $1}')
@@ -57,6 +61,7 @@ user_data = <<-EOF
               sudo systemctl restart consul
 
               # Create nomad user
+              if [ ${count.index} -lt 7 ]; then
               sudo useradd --system --home /etc/nomad.d --shell /bin/false nomad
               sudo mkdir --parents /etc/nomad.d
               sudo mkdir --parents /var/nomad
@@ -69,21 +74,28 @@ user_data = <<-EOF
               sudo mv nomad /usr/local/bin/
               sudo chmod 755 /usr/local/bin/nomad
               sudo chown nomad:nomad /usr/local/bin/nomad
+              
+              else
+                  echo "Nomad installed on 7 nodes"
+
+              fi
+              echo "Nomad installed"
 
               # Copy the Nomad configuration file and systemd service file
               if [ ${count.index} -eq 0 ]; then
                   echo "${file("${path.module}/../../nomad.bootstrap.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
               elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] ; then
                   echo "${file("${path.module}/../../nomad-server.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
-              else
+              elif [ ${count.index} -lt 7 ]; then
                   echo "${file("${path.module}/../../nomad-clients.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
-              fi
-              echo "${file("${path.module}/../../nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
+                  echo "${file("${path.module}/../../nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
               # Enable and start Nomad
               sudo systemctl enable nomad
               sudo systemctl start nomad
               sudo service consul restart
               sudo service nomad restart
+              fi
+              echo "Nomad client and server done"
 
 
               # Install Vault
@@ -158,6 +170,40 @@ user_data = <<-EOF
               else
                   echo "Else nothing"
               fi
+                  echo "Installation has been done"
+              #########################################Solr and Zk##########################
+               if [ ${count.index} -ge 7 ] && [ ${count.index} -le 9 ]; then
+                  wget https://archive.apache.org/dist/zookeeper/zookeeper-3.4.9/zookeeper-3.4.9.tar.gz -P /opt
+                  sudo tar -xzf /opt/zookeeper-3.4.9.tar.gz -C /opt
+                  sudo mv /opt/zookeeper-3.4.9 /opt/zookeeper
+                  sudo mkdir -p /var/lib/zookeeper/data
+                  sudo cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg
+                  echo "${file("${path.module}/../../zoo.cfg.tpl")}" | sudo tee /opt/zookeeper/conf/zoo.cfg
+                  
+                if [ ${count.index} -eq 7 ]; then
+                  sudo echo "1" > /var/lib/zookeeper/data/myid
+                elif [ ${count.index} -eq 8 ]; then
+                  sudo echo "2" > /var/lib/zookeeper/data/myid
+                elif [ ${count.index} -eq 9 ]; then
+                  sudo echo "3" > /var/lib/zookeeper/data/myid
+                fi
+
+
+                if [ ${count.index} -ge 7 ] && [ ${count.index} -le 9 ]; then
+                  sudo /opt/zookeeper/bin/zkServer.sh start
+                fi
+                fi
+
+
+               if [[ ${count.index} -ge 7 && ${count.index} -le 11 ]]; then
+                  wget https://dlcdn.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz -P /opt
+                  sudo tar -xzf /opt/solr-8.11.2.tgz -C /opt solr-8.11.2/bin/install_solr_service.sh --strip-components=2
+                  sudo bash /opt/install_solr_service.sh /opt/solr-8.11.2.tgz
+                  sudo /opt/solr/bin/solr stop  -p  8983
+                  sudo /opt/solr/bin/solr start -c -s  /opt/solr/server/solr -p 8983 -z 10.0.1.17:2181,10.0.1.18:2181,10.0.1.19:2181 -noprompt -force
+               else
+                  echo "Installation is completed"
+               fi
                   echo "Installation has been done"
 
               EOF

@@ -9,4 +9,4 @@ tags = {
     Creator     = "Terraform"
 }
 cnv_ip_range = "10.0.1."
-cnv_volume_size = 100
+cnv_volume_size = 200

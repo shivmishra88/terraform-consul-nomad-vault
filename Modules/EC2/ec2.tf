@@ -54,8 +54,9 @@ user_data = <<-EOF
                   echo "${file("${path.module}/../../consul-server.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
               else
                   echo "${file("${path.module}/../../consul-client.hcl.tpl")}" | sudo tee /etc/consul.d/consul.hcl
+                  echo "${file("${path.module}/../../consul.service")}" | sudo tee /etc/systemd/system/consul.service
               fi
-              echo "${file("${path.module}/../../consul.service")}" | sudo tee /etc/systemd/system/consul.service
+                  echo "Consul installation done"
            
               # Enable and start Consul
               sudo systemctl enable consul

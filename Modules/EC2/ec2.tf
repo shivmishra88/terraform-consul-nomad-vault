@@ -85,8 +85,10 @@ user_data = <<-EOF
               # Copy the Nomad configuration file and systemd service file
               if [ ${count.index} -eq 0 ]; then
                   echo "${file("${path.module}/../../nomad.bootstrap.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
+                  echo "${file("${path.module}/../../nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
               elif [ ${count.index} -eq 1 ] || [ ${count.index} -eq 2 ] ; then
                   echo "${file("${path.module}/../../nomad-server.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
+                  echo "${file("${path.module}/../../nomad.service")}" | sudo tee /etc/systemd/system/nomad.service
               elif [ ${count.index} -ge 0 ] && [ ${count.index} -le 7 ]; then
                   echo "${file("${path.module}/../../nomad-clients.hcl.tpl")}" | sudo tee /etc/nomad.d/nomad.hcl
                   echo "${file("${path.module}/../../nomad.service")}" | sudo tee /etc/systemd/system/nomad.service

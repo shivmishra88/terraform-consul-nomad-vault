@@ -25,6 +25,7 @@ user_data = <<-EOF
               sudo apt-get install net-tools
               sudo apt-get install default-jdk -y
               sudo apt-get install bzip2
+              sudo apt install -y awscli
               # Get private IP address
               private_ip=$(hostname -I | awk '{print $1}')
               
